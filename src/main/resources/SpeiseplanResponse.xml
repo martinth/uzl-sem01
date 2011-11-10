@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mensa:speiseplanResponse xmlns:mensa="http://itm.uniluebeck.de/vs1112/uebung2/aufgabe211/xml">
+	<dayOfYear>112</dayOfYear>
+	<speiseplan>
+		<speise>
+			<description>Gulaschsuppe</description>
+			<priceInCent>130</priceInCent>
+		</speise>
+		<speise>
+			<description>Schweinesteak</description>
+			<priceInCent>210</priceInCent>
+		</speise>
+		<speise>
+			<description>Ofenkartoffel</description>
+			<priceInCent>190</priceInCent>
+		</speise>
+	</speiseplan>
+</mensa:speiseplanResponse>

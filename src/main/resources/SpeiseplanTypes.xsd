@@ -1,0 +1,54 @@
+<xs:schema targetNamespace="http://itm.uniluebeck.de/vs1112/uebung2/aufgabe211/xml"
+		   xmlns:xs="http://www.w3.org/2001/XMLSchema"
+		   xmlns="http://itm.uniluebeck.de/vs1112/uebung2/aufgabe211/xml">
+
+	<xs:complexType name="SpeiseplanRequest">
+		<xs:all>
+			<xs:element name="dayOfYear" type="DayOfYear" minOccurs="1" maxOccurs="1" />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="Speiseplan">
+		<xs:sequence>
+			<xs:element name="speise" type="Speise" minOccurs="0" maxOccurs="3" />
+		</xs:sequence>
+	</xs:complexType>
+
+	<xs:complexType name="Speise">
+		<xs:all>
+			<xs:element name="description" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="255" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="priceInCent" minOccurs="1" maxOccurs="1">
+				<xs:simpleType>
+					<xs:restriction base="xs:integer">
+						<xs:minInclusive value="0" />
+						<xs:maxInclusive value="255" />
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:all>
+	</xs:complexType>
+
+	<xs:complexType name="SpeiseplanResponse">
+		<xs:all>
+			<xs:element name="dayOfYear" type="DayOfYear" minOccurs="1" maxOccurs="1" />
+			<xs:element name="speiseplan" type="Speiseplan" minOccurs="1" maxOccurs="1" />
+		</xs:all>
+	</xs:complexType>
+
+	<xs:simpleType name="DayOfYear">
+		<xs:restriction base="xs:integer">
+			<xs:minInclusive value="1" />
+			<xs:maxInclusive value="366" />
+		</xs:restriction>
+	</xs:simpleType>
+
+	<xs:element name="speiseplanRequest" type="SpeiseplanRequest" />
+	<xs:element name="speiseplanResponse" type="SpeiseplanResponse" />
+
+</xs:schema>
