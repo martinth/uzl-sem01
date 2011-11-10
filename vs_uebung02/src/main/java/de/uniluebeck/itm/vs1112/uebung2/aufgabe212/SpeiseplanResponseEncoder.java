@@ -10,7 +10,7 @@ public class SpeiseplanResponseEncoder implements Encoder<SpeiseplanResponse> {
 	@Override
 	public byte[] encode(final SpeiseplanResponse object) throws EncodingException {
 		
-		ByteBuffer buf = ByteBuffer.allocate(1000); //FIXME
+		ByteBuffer buf = ByteBuffer.allocate(1000); // we overallocate, 1000 bytes are enough for max. 3 meals
 		buf.put((byte) 1);
 		
 		if (object.getDayOfYear() < 1 || object.getDayOfYear() > 366) {
