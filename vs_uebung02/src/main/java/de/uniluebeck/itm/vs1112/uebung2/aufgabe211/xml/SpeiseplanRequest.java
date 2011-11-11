@@ -10,6 +10,7 @@ package de.uniluebeck.itm.vs1112.uebung2.aufgabe211.xml;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -32,6 +33,7 @@ import javax.xml.bind.annotation.XmlType;
  * 
  * 
  */
+@XmlRootElement // added by hand - Martin Thurau
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpeiseplanRequest", propOrder = {
 
