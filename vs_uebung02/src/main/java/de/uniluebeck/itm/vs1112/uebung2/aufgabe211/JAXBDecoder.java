@@ -1,5 +1,9 @@
 package de.uniluebeck.itm.vs1112.uebung2.aufgabe211;
 
+import java.io.ByteArrayInputStream;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+
 import de.uniluebeck.itm.vs1112.uebung2.Decoder;
 import de.uniluebeck.itm.vs1112.uebung2.DecodingException;
 
@@ -24,6 +28,18 @@ public class JAXBDecoder<T> implements Decoder<T> {
 
 	@Override
 	public T decode(final byte[] bytes) throws DecodingException {
-		return null;  // TODO implement
+		try {
+			ByteArrayInputStream inStream = new ByteArrayInputStream(bytes);
+			JAXBContext ctx = JAXBContext.newInstance("de.uniluebeck.itm.vs1112.uebung2.aufgabe211.xml");
+			Object obj = ctx.createUnmarshaller().unmarshal(inStream);
+			if (obj.getClass() != this.clazz ) {
+				throw new DecodingException("Unmarshalled object had wrong classtype");
+			}
+			return (T) obj;
+		} catch (JAXBException e) {
+			throw new DecodingException(e);
+		} catch (ClassCastException e) {
+			throw new DecodingException(e);
+		}
 	}
 }

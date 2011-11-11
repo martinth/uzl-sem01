@@ -1,5 +1,7 @@
 package de.uniluebeck.itm.vs1112.uebung2.aufgabe211;
 
+import java.io.ByteArrayOutputStream;
+
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 
@@ -23,12 +25,11 @@ public class JAXBEncoder<T> implements Encoder<T> {
 	public byte[] encode(final T object) throws EncodingException {
 		try {
 			JAXBContext ctx = JAXBContext.newInstance("de.uniluebeck.itm.vs1112.uebung2.aufgabe211.xml");
-			ctx.createMarshaller().marshal(object, System.out);
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			ctx.createMarshaller().marshal(object, outputStream);
+			return outputStream.toByteArray();
 		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new EncodingException(e);
 		}
-		
-		return new byte[0];  // TODO implement
 	}
 }
