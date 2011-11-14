@@ -8,9 +8,10 @@ import java.util.ArrayList;
 
 public class Knapsack {
     
-    private int size;
-    private ArrayList<Integer> weights = new ArrayList<Integer>();
-    private ArrayList<Integer> values = new ArrayList<Integer>();
+    int max_weight;
+    Integer[] weights;
+    Integer[] values; 
+    
 
     private Knapsack() {}
 
@@ -23,7 +24,10 @@ public class Knapsack {
         if (target == null) {
             throw new IOException(String.format("Input file '%s' had invalid format", filename));
         }
-        sack.size = Integer.parseInt(target);
+        sack.max_weight = Integer.parseInt(target);
+        
+        ArrayList<Integer> w_tmp = new ArrayList<Integer>();
+        ArrayList<Integer> v_tmp = new ArrayList<Integer>();
         
         String line;
         while ((line = inFile.readLine()) != null)   {
@@ -31,10 +35,13 @@ public class Knapsack {
             if (parts.length != 2) {
                 throw new IOException(String.format("Input file '%s' had invalid format", filename));
             }
-            sack.weights.add(Integer.parseInt(parts[0]));
-            sack.values.add(Integer.parseInt(parts[1]));
+            w_tmp.add(Integer.parseInt(parts[0]));
+            v_tmp.add(Integer.parseInt(parts[1]));
             
         }
+        sack.weights = w_tmp.toArray(new Integer[] {});
+        sack.values = v_tmp.toArray(new Integer[] {});
+        
         return sack;
     }
 

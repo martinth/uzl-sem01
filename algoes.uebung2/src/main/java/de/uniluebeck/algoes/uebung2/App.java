@@ -13,7 +13,7 @@ public class App {
             try {
                 Knapsack instance = Knapsack.fromFile(problemFile);
                 KnapsackSolver solver = new KnapsackSolver(instance);
-                solver.solve();
+                System.out.printf("%s: %d\n", problemFile, solver.solve());
             } catch (FileNotFoundException e) {
                 System.err.printf("File '%s' not found\n", problemFile);
                 System.exit(1);
