@@ -47,7 +47,11 @@ public class LengthFieldDecoder<T> implements Decoder<T[]> {
                     }
                     byte[] rawData = new byte[buf.getInt()];
                     buf.get(rawData);
-                    decodedElements.add( this.elementDecoder.decode(rawData) );
+                    try {
+                    	decodedElements.add( this.elementDecoder.decode(rawData) );
+                    } catch (DecodingException e) {
+                    	System.err.println("Warning: LengthFieldDecoder skipped one element because of DecodingException");
+                    }
     		    } 
     		}
 		} catch (BufferUnderflowException bue) {
