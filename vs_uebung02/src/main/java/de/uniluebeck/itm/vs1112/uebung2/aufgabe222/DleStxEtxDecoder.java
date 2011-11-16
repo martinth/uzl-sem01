@@ -62,9 +62,14 @@ public class DleStxEtxDecoder<T> implements Decoder<T[]> {
                         temp.write(b2);
                         state = STATES.inFrame;
                     } else if (b2 == DleStxEtxConstants.ETX) { // frame is complete
-                        decodedElements.add( this.elementDecoder.decode(temp.toByteArray()) );
-                        temp = new ByteArrayOutputStream();
-                        state = STATES.outsideFrame;
+                    	try {
+                    		decodedElements.add( this.elementDecoder.decode(temp.toByteArray()) );
+                    	} catch (DecodingException e) {
+                    		System.err.println("Warning: DleStxEtxDecoder skipped one element because of DecodingException");
+                    	} finally {
+	                        temp = new ByteArrayOutputStream();
+	                        state = STATES.outsideFrame;
+                    	}
                     } else { // error case, void data and return to initial state
                         temp = new ByteArrayOutputStream();
                         state = STATES.outsideFrame;
