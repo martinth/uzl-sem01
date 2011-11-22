@@ -37,6 +37,24 @@ public class Server implements Runnable{
      */
     public void run() {
         try {
+            this.handleOne();
+        } catch (IOException e) {
+            // can't do anything useful, let finally clean up
+        } finally {
+            try {
+                out.close();
+            } catch (IOException e) {
+                // what the hell, if close() fails there are probably bigger problems
+            }
+        }
+    }
+    
+    /**
+     * Handles one requests and returns
+     * @throws IOException on IO errors
+     */
+    public void handleOne() throws IOException {
+        try {
             // read header and determine length
             ByteBuffer buf = ByteBuffer.allocate(4);
             for(int i= 0; i <4; i++) {
@@ -63,18 +81,10 @@ public class Server implements Runnable{
             // send data
             out.write(outputBuffer.array());
             
-        } catch (IOException e) {
-            // can't do anything useful, let finally clean up
-        } catch (DecodingException e) {
-            // can't do anything useful, let finally clean up
+        }  catch (DecodingException e) {
+            // can't do anything useful
         } catch (EncodingException e) {
-            // can't do anything useful, let finally clean up
-        } finally {
-            try {
-                out.close();
-            } catch (IOException e) {
-                // what the hell, if close() fails there are probably bigger problems
-            }
+            // can't do anything useful
         }
     }
 }
