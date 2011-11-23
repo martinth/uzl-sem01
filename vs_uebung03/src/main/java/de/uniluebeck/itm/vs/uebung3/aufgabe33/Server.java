@@ -49,8 +49,6 @@ public class Server implements Runnable {
             }
             
         }
-        
-        //TODO: Implement multi-thread(!) server to accept TCP requests (one thread per request)
     }
 }
 
