@@ -62,7 +62,6 @@ class SpeiseplanHandler implements Runnable {
         this.clientSocket = clientSocket;
     }
 
-    @Override
     public void run() {
         // use inner server for the response
         try {
