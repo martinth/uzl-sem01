@@ -36,10 +36,13 @@ public class Server implements Runnable {
                 innerServer.handleOne();
             } catch (IOException e) {
                 // let finally close the socket
+            	System.err.println(e);
             } catch (DecodingException e) {
                 // let finally close the socket
+            	System.err.println(e);
             } catch (EncodingException e) {
                 // let finally close the socket
+            	System.err.println(e);
             } finally {
                 try {
                     if (clientSocket != null) {
@@ -48,6 +51,7 @@ public class Server implements Runnable {
                 } catch (IOException e) {
                     // so "close()" failed, this is somewhat bad and somewhat
                     // irrelevant
+                	System.err.println(e);
                 }
             }
         }
