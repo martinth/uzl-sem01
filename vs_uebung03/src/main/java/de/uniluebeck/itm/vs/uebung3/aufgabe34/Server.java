@@ -16,6 +16,12 @@ import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory;
 import org.jboss.netty.handler.codec.frame.LengthFieldBasedFrameDecoder;
 import org.jboss.netty.handler.codec.frame.LengthFieldPrepender;
 
+/**
+ * Event-Driven Netty Server
+ * 
+ * @author Martin Thurau
+ * @author Mika Jaenecke
+ */
 public class Server implements Runnable {
 
     private int port;
@@ -35,28 +41,28 @@ public class Server implements Runnable {
 
         ServerBootstrap bootstrap = new ServerBootstrap(factory);
 
-        // setup pipeline - each task is done by a seperate "layer" of code
+        // setup pipeline - each task is done by a separate "layer" of code
         bootstrap.setPipelineFactory(new ChannelPipelineFactory() {
             public ChannelPipeline getPipeline() {
                 return Channels.pipeline(
-                    /* Downstream handler
-                     *  FrameDecoder chops of length field and passes the rest to the next downstream hander */
+                    /* Upstream handler -
+                     * FrameDecoder chops of length field and passes the rest to the next handler. */
                     new LengthFieldBasedFrameDecoder(10000, 0, 4, 0, 4),
                     
-                    /* Upstream Handler
-                     * Prepends length field */
+                    /* Downstream handler -
+                     * Prepends length field. */
                     new LengthFieldPrepender(4),
                     
-                    /* Downstream handler
-                     * decodes the request to a POJO */
+                    /* Upstream handler -
+                     * Decodes the request to a POJO. */
                     new RequestDecoder(),
                     
-                    /* Upstream Handler
-                     * serializes POJO to bytes */
+                    /* Downstream handler -
+                     * Serializes POJO to bytes. */
                     new RequestEncoder(),
                     
-                    /* Up- and Downstream Handler
-                     * Fetches the Response from Database */
+                    /* Up- and Downstream handler -
+                     * Fetches the response from database. */
                     new SpeiseplanHandler());
             }
         });
@@ -65,7 +71,7 @@ public class Server implements Runnable {
         Channel channel = bootstrap.bind(new InetSocketAddress(this.port));
         allChannels.add(channel);
         
-        // shutdown hook for gracefull shutdown
+        // shutdown hook for graceful shutdown
         final Server serverproc = this;
         Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
             public void run() {
@@ -75,10 +81,10 @@ public class Server implements Runnable {
     }
 
     /**
-     * Shutdown all channels
+     * Shutdown all channels.
      */
     protected void shutdown() {
-        System.out.println("Gacefully shuttding down");
+        System.out.println("Gracefully shutting down");
         ChannelGroupFuture future = allChannels.close();
         future.awaitUninterruptibly();
         factory.releaseExternalResources();
