@@ -1,7 +1,5 @@
 package de.uniluebeck.itm.vs.uebung3.aufgabe33;
 
-import static org.junit.Assert.*;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -13,7 +11,7 @@ public class Server33Test {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-      //Server Thread
+        //Server Thread
         new Thread(){
             @Override
             public void run(){
@@ -26,7 +24,7 @@ public class Server33Test {
     @Test
     public void test() {
         for (int i = 0; i< 20; i++) {
-          //Client Thread
+            //Client Thread
             new Thread(){
                 @Override
                 public void run(){
@@ -36,5 +34,4 @@ public class Server33Test {
             }.start();
         }
     }
-
 }
