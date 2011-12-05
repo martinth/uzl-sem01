@@ -62,7 +62,9 @@ public class UniversalHash implements Hashfunction {
 		 * 		h_a,b(x) = ((ax+b) mod p) mod r
 		 * cast to int is save, since typeof(size) = int, so 
 		 * the modulo n % size is < Integer.MAX_INT */
-		return (int) ((a*key+b) % p) % size;
+		int hash = (int) ((a*key+b) % p) % size;
+		log.debug("Hash for "+key+": "+hash);
+		return hash;
 	}
 
 	public Hashfunction createNext() {

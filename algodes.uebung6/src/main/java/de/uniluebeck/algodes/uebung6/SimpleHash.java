@@ -1,5 +1,7 @@
 package de.uniluebeck.algodes.uebung6;
 
+import org.apache.log4j.Logger;
+
 /**
  * Simple hash function. Implements h(x) = x mod r.
  * 
@@ -7,9 +9,13 @@ package de.uniluebeck.algodes.uebung6;
  * 
  */
 public class SimpleHash implements Hashfunction {
+	
+	Logger log = Logger.getLogger(this.getClass().getCanonicalName());
 
 	public int hash(int key, int size) {
-		return key % size;
+		int hash = key % size;
+		log.debug("Hash for "+key+": "+hash);
+		return hash;
 	}
 
 	public Hashfunction createNext() {
