@@ -12,7 +12,7 @@ public class LinarHashMapTest {
 	Logger log = Logger.getLogger(this.getClass().getCanonicalName());
 
 	@Test
-	public void testInsert() throws HashMapException {
+	public void testInsert() {
 	    
 	    int test_limit = 20;
 	    Random r = new Random();
