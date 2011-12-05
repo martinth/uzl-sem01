@@ -37,7 +37,7 @@ public class UniversalHash implements Hashfunction {
 		/* create a prime number with Long.SIZE bitlength for use
 		 * as p for the current family. We use a long, since p must be larger
 		 * than the maximum key */
-		p = BigInteger.probablePrime(Long.SIZE-1, random).longValue() % Long.MAX_VALUE;
+		p = BigInteger.probablePrime(Integer.SIZE+2, random).longValue() % Long.MAX_VALUE;
 		/* calc a and b based on p */
 		calcFamilyBases();
 		
@@ -62,7 +62,7 @@ public class UniversalHash implements Hashfunction {
 		 * 		h_a,b(x) = ((ax+b) mod p) mod r
 		 * cast to int is save, since typeof(size) = int, so 
 		 * the modulo n % size is < Integer.MAX_INT */
-		int hash = (int) ((a*key+b) % p) % size;
+		int hash = (int) (((a*key+b) % p) % size);
 		log.debug("Hash for "+key+": "+hash);
 		return hash;
 	}
