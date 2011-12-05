@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 
-public class LinarHashMap implements HashMap {
+public class LinearHashMap implements HashMap {
     
     private final Logger log = Logger.getLogger(this.getClass().getCanonicalName());
 	
@@ -27,7 +27,7 @@ public class LinarHashMap implements HashMap {
 	/**
 	 * @param hashfunc the {@link Hashfunction} to be used
 	 */
-	public LinarHashMap(Hashfunction hashfunc) {
+	public LinearHashMap(Hashfunction hashfunc) {
         this(hashfunc, DEFAULT_SIZE);
     }
 	
@@ -35,7 +35,7 @@ public class LinarHashMap implements HashMap {
 	 * @param hashfunc the {@link Hashfunction} to be used
 	 * @param initalSize inital size of backing array
 	 */
-	public LinarHashMap(Hashfunction hashfunc, int initalSize) {
+	public LinearHashMap(Hashfunction hashfunc, int initalSize) {
 		this.hashfunc = hashfunc;
 		this.array = new Entry[initalSize];
 	}
@@ -45,7 +45,7 @@ public class LinarHashMap implements HashMap {
      * @param hashfunc the {@link Hashfunction} to be used
      * @param initalSize inital size of backing array
      */
-	private LinarHashMap(LinarHashMap map, int initalSize) {
+	private LinearHashMap(LinearHashMap map, int initalSize) {
 	    this.entries = 0;
         this.array = new Entry[initalSize];
         this.hashfunc = map.hashfunc.createNext();
@@ -123,7 +123,7 @@ public class LinarHashMap implements HashMap {
         log.setLevel(Level.WARN);
         
         // create new map based on this and copy values to this instance
-        LinarHashMap tmpMap = new LinarHashMap(this, newSize);
+        LinearHashMap tmpMap = new LinearHashMap(this, newSize);
         this.array = tmpMap.array;
         this.entries = tmpMap.entries;
         this.hashfunc = tmpMap.hashfunc;

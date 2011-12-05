@@ -17,7 +17,7 @@ public class LinarHashMapTest {
 	    int test_limit = 20;
 	    Random r = new Random();
 	    
-		LinarHashMap map = new LinarHashMap(new UniversalHash());
+		LinearHashMap map = new LinearHashMap(new UniversalHash());
 		for(int i=0; i<= test_limit; i++) {
 			map.insert(Math.abs(r.nextInt(10000)));
 			log.debug(map);
@@ -28,7 +28,7 @@ public class LinarHashMapTest {
 	public void testDelete() {
 		int[] data = new int[] {1,5,63,98,4,5,64,7,42,23};
 		
-		LinarHashMap map = new LinarHashMap(new SimpleHash(), 2);
+		LinearHashMap map = new LinearHashMap(new SimpleHash(), 2);
 		
 		for (int i : data) {
             map.insert(i);
