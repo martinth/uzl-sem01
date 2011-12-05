@@ -30,10 +30,13 @@ public class Server implements Runnable {
             this.server.handleOne();
         } catch (IOException e) {
             // can't do anything useful, let finally clean up
+        	System.err.println(e);
         } catch (DecodingException e) {
             // can't do anything useful, let finally clean up
+        	System.err.println(e);
         } catch (EncodingException e) {
             // can't do anything useful, let finally clean up
+        	System.err.println(e);
         } finally {
             try {
                 this.out.close();
@@ -41,6 +44,7 @@ public class Server implements Runnable {
             } catch (IOException e) {
                 // what the hell, if close() fails there are probably bigger
                 // problems
+            	System.err.println(e);
             }
         }
     }

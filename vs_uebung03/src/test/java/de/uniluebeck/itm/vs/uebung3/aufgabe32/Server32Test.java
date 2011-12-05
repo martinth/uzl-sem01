@@ -1,7 +1,5 @@
 package de.uniluebeck.itm.vs.uebung3.aufgabe32;
 
-import static org.junit.Assert.*;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
 

@@ -11,17 +11,16 @@ import de.uniluebeck.itm.vs.uebung3.serialization.DecodingException;
 import de.uniluebeck.itm.vs.uebung3.serialization.EncodingException;
 
 /**
- * Created by IntelliJ IDEA.
- * User: olli
- * Date: 21.11.11
- * Time: 08:33
- * To change this template use File | Settings | File Templates.
+ * Multi-Thread Server
+ * 
+ * @author Martin Thurau
+ * @author Mika Jaenecke
  */
 public class Server implements Runnable {
     
     private static int POOL_SIZE = 10;
     private ServerSocket serverSocket = null;
-    private ExecutorService pool;
+    private ExecutorService pool = null;
 
     public Server(int port) {
         try {
@@ -47,7 +46,6 @@ public class Server implements Runnable {
                     e1.printStackTrace();
                 }
             }
-            
         }
     }
 }
@@ -67,10 +65,13 @@ class SpeiseplanHandler implements Runnable {
             innerServer.handleOne();
         } catch (IOException e) {
             // let finally close the socket
+        	e.printStackTrace();
         } catch (DecodingException e) {
             // let finally close the socket
+        	e.printStackTrace();
         } catch (EncodingException e) {
             // let finally close the socket
+        	e.printStackTrace();
         } finally {
             try {
                 if (clientSocket != null) {
@@ -79,9 +80,8 @@ class SpeiseplanHandler implements Runnable {
             } catch (IOException e) {
                 // so "close()" failed, this is somewhat bad and somewhat
                 // irrelevant
+            	e.printStackTrace();
             }
         }
-        
     }
-    
 }

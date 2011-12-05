@@ -1,7 +1,5 @@
 package de.uniluebeck.itm.vs.uebung3.aufgabe34;
 
-import java.net.ConnectException;
-
 import de.uniluebeck.itm.vs.uebung3.aufgabe32.Client;
 
 /**
