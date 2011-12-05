@@ -8,9 +8,12 @@ package de.uniluebeck.algodes.uebung6;
  */
 public class SimpleHash implements Hashfunction {
 
-	public int hash(int key) {
-		// TODO Auto-generated method stub
-		return 0;
+	public int hash(int key, int size) {
+		return key % size;
+	}
+
+	public Hashfunction createNext() {
+		return this;
 	}
 
 }
