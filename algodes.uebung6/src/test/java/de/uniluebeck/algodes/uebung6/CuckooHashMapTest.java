@@ -13,7 +13,7 @@ public class CuckooHashMapTest {
 	@Test
 	public void testInsert() {
 		
-	    int limit = 20;
+	    int limit = 50;
 
 		
 		ArrayList<Integer> eles = new ArrayList<Integer>();
@@ -25,6 +25,11 @@ public class CuckooHashMapTest {
 		
 		for (Integer key : eles) {
 			map.insert(key);
+		}
+		
+		Collections.shuffle(eles);
+		for (Integer key : eles) {
+			map.delete(key);
 		}
 	}
 
