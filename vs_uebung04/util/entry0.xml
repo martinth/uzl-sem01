@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:phoneBookEntry xmlns:ns2="http://itm.uniluebeck.de/vs1112/uebung4/xml">
+    <name>Daniel Bimschas</name>
+    <number>5387</number>
+</ns2:phoneBookEntry>
