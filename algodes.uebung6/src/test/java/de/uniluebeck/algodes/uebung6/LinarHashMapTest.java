@@ -7,10 +7,11 @@ import java.util.Random;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
+import de.uniluebeck.algodes.uebung6.hashes.SimpleHash;
+import de.uniluebeck.algodes.uebung6.hashes.UniversalHash;
+
 public class LinarHashMapTest {
 	
-	Logger log = Logger.getLogger(this.getClass().getCanonicalName());
-
 	@Test
 	public void testInsert() {
 	    
@@ -20,7 +21,6 @@ public class LinarHashMapTest {
 		LinearHashMap map = new LinearHashMap(new UniversalHash());
 		for(int i=0; i<= test_limit; i++) {
 			map.insert(Math.abs(r.nextInt(10000)));
-			log.debug(map);
 		}
 	}
 

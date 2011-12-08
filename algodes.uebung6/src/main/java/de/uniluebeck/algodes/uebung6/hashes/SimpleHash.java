@@ -1,4 +1,4 @@
-package de.uniluebeck.algodes.uebung6;
+package de.uniluebeck.algodes.uebung6.hashes;
 
 /**
  * Simple hash function. Implements h(x) = x mod r.

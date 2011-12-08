@@ -1,4 +1,6 @@
-package de.uniluebeck.algodes.uebung6;
+package de.uniluebeck.algodes.uebung6.hashes;
+
+import de.uniluebeck.algodes.uebung6.HashMap;
 
 /**
  * A hash function for use in {@link HashMap}.

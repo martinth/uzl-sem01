@@ -5,6 +5,8 @@ import org.apache.log4j.Logger;
 import com.google.common.base.Joiner;
 import com.google.common.base.Objects;
 
+import de.uniluebeck.algodes.uebung6.hashes.Hashfunction;
+
 public class LinearHashMap implements HashMap {
     
     private final Logger log = Logger.getLogger(this.getClass().getCanonicalName());
@@ -64,11 +66,13 @@ public class LinearHashMap implements HashMap {
         // will hold the index where the key was inserted
         int insertedAt = -1;
         
+        // offset from the desired position
+        int offset = 0;        
         /* loop over array position until we find a free one. we start
          * with offset 0, so the first try is the desired position returned
          * by the hash function.
          * there should always be a free position! */
-        for(int offset = 0; offset < array.length; offset++) {
+        for(offset = 0; offset < array.length; offset++) {
             int tryPos = (desiredPos + offset) % array.length;
             
             // if position is empty store the key there
@@ -88,10 +92,15 @@ public class LinearHashMap implements HashMap {
         }
         
         assert(insertedAt != -1);
-        log.info("Inserted key "+key+" at position "+insertedAt);
+        if(insertedAt == desiredPos) {
+        	log.info("Inserted key "+key+" at position "+insertedAt);
+        } else {
+        	log.info("Inserted key "+key+" at position "+insertedAt+". Linear probing offset: "+offset);
+        }
         
         float loadFactor = getLoadFactor();
         log.debug("Current load factor is " + loadFactor);
+        log.debug("State of HahsMap: " + this);
         if(loadFactor > a_max || Math.abs(loadFactor - a_max) < LOAD_EPSILON) {
 		    rehash();
 		}
@@ -130,6 +139,7 @@ public class LinearHashMap implements HashMap {
         
         // reset loglevel
         log.setLevel(oldLevel);
+        log.debug("State of HahsMap: " + this);
     }
 
     public void delete(int key) {
@@ -146,6 +156,7 @@ public class LinearHashMap implements HashMap {
         
         float loadFactor = getLoadFactor();
         log.debug("Current load factor is " + loadFactor);
+        log.debug("State of HahsMap: " + this);
         if(loadFactor < a_min || Math.abs(loadFactor - a_min) < LOAD_EPSILON) {
             rehash();
         }

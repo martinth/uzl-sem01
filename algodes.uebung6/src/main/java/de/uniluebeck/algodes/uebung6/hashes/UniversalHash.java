@@ -1,4 +1,4 @@
-package de.uniluebeck.algodes.uebung6;
+package de.uniluebeck.algodes.uebung6.hashes;
 
 import java.math.BigInteger;
 import java.util.Random;
@@ -30,7 +30,7 @@ public class UniversalHash implements Hashfunction {
 	private UniversalHash(long familyBase) {
 		this.p = familyBase;
 		calcFamilyBases();
-		log.info("Created new "+ this +" based on given base "+ familyBase);
+		log.debug("Created new "+ this +" based on given base "+ familyBase);
 	}
 
 	public UniversalHash() {
@@ -41,7 +41,7 @@ public class UniversalHash implements Hashfunction {
 		/* calc a and b based on p */
 		calcFamilyBases();
 		
-		log.info("Created new "+ this);
+		log.debug("Created new "+ this);
 	}
 
 	/**
@@ -63,7 +63,6 @@ public class UniversalHash implements Hashfunction {
 		 * cast to int is save, since typeof(size) = int, so 
 		 * the modulo n % size is < Integer.MAX_INT */
 		int hash = (int) (((a*key+b) % p) % size);
-		log.debug("Hash for "+key+": "+hash);
 		return hash;
 	}
 
