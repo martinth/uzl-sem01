@@ -100,7 +100,7 @@ public class LinearHashMap implements HashMap {
         
         float loadFactor = getLoadFactor();
         log.debug("Current load factor is " + loadFactor);
-        log.debug("State of HahsMap: " + this);
+        log.debug("State of HashMap: " + this);
         if(loadFactor > a_max || Math.abs(loadFactor - a_max) < LOAD_EPSILON) {
 		    rehash();
 		}
