@@ -8,6 +8,7 @@ import com.google.common.base.Objects;
 import com.google.common.collect.Iterables;
 import de.uniluebeck.algodes.uebung6.hashes.Hashfunction;
 import de.uniluebeck.algodes.uebung6.hashes.UniversalHash;
+import de.uniluebeck.algodes.uebung6.util.CountingIntArray;
 
 /**
  * Implements a HashMap using the cuckoo hashmap algorithm.
@@ -87,7 +88,7 @@ public class CuckooHashMap implements HashMap {
 		/* if there is a free position, insert the key there */
 		if (arrayPos != null) {
 			arrayPos.set(key);
-			log.debug("Key " + key + " was inserted in " + arrayPos.array
+			log.info("Key " + key + " was inserted in " + arrayPos.array
 					+ " at pos " + arrayPos.pos);
 		}
 		/* if there is no free space, we use the cuckoo operation to make place */
@@ -102,7 +103,7 @@ public class CuckooHashMap implements HashMap {
 
 			/*
 			 * the cuckoo operation inserts the current key in swappedOut until
-			 * it has found a free place ot the countdown reaches 0
+			 * it has found a free place or the countdown reaches 0
 			 */
 			do {
 				swappedOut = this.swap(swappedOut, curArray);
@@ -112,7 +113,8 @@ public class CuckooHashMap implements HashMap {
 
 			/* if swappedOut is still not null, we have to rehash */
 			if (swappedOut != null) {
-				log.error("Need to rehash!");
+				log.warn("Could not insert in "+countDown+" steps. Rehash!");
+				rehash();
 			}
 		}
 		log.debug(this);

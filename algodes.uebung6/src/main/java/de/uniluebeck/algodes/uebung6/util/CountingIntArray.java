@@ -1,4 +1,4 @@
-package de.uniluebeck.algodes.uebung6;
+package de.uniluebeck.algodes.uebung6.util;
 
 import java.util.Arrays;
 
@@ -9,7 +9,7 @@ import java.util.Arrays;
  * @author martin
  * 
  */
-class CountingIntArray implements Iterable<Integer> {
+public class CountingIntArray implements Iterable<Integer> {
 
 	private Integer[] array;
 	private int entries = 0;
