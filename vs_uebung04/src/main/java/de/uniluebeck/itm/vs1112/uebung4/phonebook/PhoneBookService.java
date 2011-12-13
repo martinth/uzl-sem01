@@ -271,10 +271,21 @@ public class PhoneBookService {
         return Response.status(status).entity(this.getEntry(id).getEntity()).build();
     }
 	
-	
-	
-
-	
-	
+	/**
+	 * Deletes the phone book entry of the employee with ID.
+	 * @param id resource to delete
+	 * @return 204 No Content
+	 * @throws EmployeeDBUnknownIdException can not happen since we assure it is there
+	 */
+	@DELETE
+	@Path("/{id: [0-9]+}")
+    public Response deleteEntry(@PathParam("id") int id) throws EmployeeDBUnknownIdException {
+	    EmployeeDBEntry employee = employeeDB.findById(id);
+	    if(employee != null) {
+	        employee.setPhoneNumber(null);
+	        employeeDB.update(employee);
+	    }
+	    return this.getEntry(id);
+	}
 
 }
