@@ -19,8 +19,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import org.apache.log4j.Logger;
-
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
@@ -36,10 +34,10 @@ import de.uniluebeck.itm.vs1112.uebung4.xml.PhoneBookEntryWithUri;
  * Skeleton class to implement the phone book REST service specification.
  */
 @Path("/phonebook")
+@Consumes("application/xml")
+@Produces("application/xml")
 public class PhoneBookService {
     
-    private final Logger log = Logger.getLogger(this.getClass().getCanonicalName());
-
 	/**
 	 * Reference to the legacy employee DB. Will be set by the framework upon program (or unit-test) startup.
 	 */
@@ -53,7 +51,6 @@ public class PhoneBookService {
 	 * If present only returns phone book entries that have a name of which name is a substring.
 	 */
 	@GET
-	@Produces("application/xml")
 	public Response getPhonebook(
 	        @DefaultValue("") @QueryParam("name") final String name
 	) {
@@ -108,8 +105,6 @@ public class PhoneBookService {
 	 * @throws EmployeeDBIdAlreadyExistsException can not happen since we assure it is there
 	 */
 	@PUT
-    @Consumes("application/xml")
-    @Produces("application/xml")
     public Response putPhonebook(PhoneBookEntryList newEntryList) throws EmployeeDBUnknownIdException, EmployeeDBIdAlreadyExistsException {
 	    // will store all entries in the request with there ids as key
 	    HashMap<Long, PhoneBookEntryWithUri> entriesInRequest = new HashMap<Long, PhoneBookEntryWithUri>();
@@ -163,8 +158,6 @@ public class PhoneBookService {
 	 * @throws EmployeeDBUnknownIdException can not happen since we assure it is there
 	 */
 	@POST
-    @Consumes("application/xml")
-    @Produces("application/xml")
     public Response postPhonebook(PhoneBookEntryList updateEntryList) throws EmployeeDBIdAlreadyExistsException, EmployeeDBUnknownIdException {
 	    
 	    for (PhoneBookEntryWithUri updateEntry : updateEntryList.getPhoneBookEntryWithUri()) {
@@ -179,7 +172,6 @@ public class PhoneBookService {
                     entryInDb.setPhoneNumber(updateEntry.getPhoneBookEntry().getNumber());
                 }
                 employeeDB.update(entryInDb);
-                //TODO
             }
             // according to mailinglist bad uris in request should be treated as bad request
             else {
@@ -199,7 +191,6 @@ public class PhoneBookService {
 	 * @throws EmployeeDBUnknownIdException can not happen, since we assure it is there
 	 */
 	@DELETE
-    @Consumes("application/xml")
     public Response deletePhonebook() throws EmployeeDBUnknownIdException {
 	    for (EmployeeDBEntry dbEntry : employeeDB.getEntries()) {
             dbEntry.setPhoneNumber("");
@@ -215,18 +206,14 @@ public class PhoneBookService {
 	 */
 	@GET
 	@Path("/{id: [0-9]+}")
-	@Produces("application/xml")
 	public Response getEntry(@PathParam("id") int id) {
-	    log.debug("GET phonebook entry with id "+id);
 	    EmployeeDBEntry employee = employeeDB.findById(id);
 	    if(employee == null || employee.getPhoneNumber() == null || employee.getPhoneNumber().isEmpty()) {
-	        log.debug("phonebook entry with id "+id+" wasn't found:"+ employee);
 	        return Response.noContent().build();
 	    } else {
 	        PhoneBookEntry pbe = new PhoneBookEntry();
 	        pbe.setName(employee.getName());
 	        pbe.setNumber(employee.getPhoneNumber());
-	        log.debug("phonebook entry with id "+id+" found:\n"+pbe);
 	        return Response.ok(pbe).build();
 	    }
 	}
@@ -241,13 +228,10 @@ public class PhoneBookService {
 	 */
 	@PUT
     @Path("/{id: [0-9]+}")
-	@Consumes("application/xml")
-    @Produces("application/xml")
     public Response putEntry(
             @PathParam("id") int id,
             PhoneBookEntry newEntry
     ) throws EmployeeDBUnknownIdException, EmployeeDBIdAlreadyExistsException { 
-        log.debug("PUT phonebook entry with id "+id+" data:\n"+newEntry);
 	    
         EmployeeDBEntry employee = employeeDB.findById(id);
         Status status = null;
@@ -256,13 +240,11 @@ public class PhoneBookService {
         if(employee == null) {
             employee = employeeDB.create(id, newEntry.getName());
             status = Status.CREATED;
-            log.debug("Employee not in DB. Was created");
         }
         // employee is already in db -> update
         else {
             employee.setName(newEntry.getName());
             status = Status.OK;
-            log.debug("Employee in DB. Was updated");
         }
         employee.setPhoneNumber(newEntry.getNumber());
         employeeDB.update(employee);
