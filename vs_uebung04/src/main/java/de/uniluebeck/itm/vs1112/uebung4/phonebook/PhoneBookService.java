@@ -1,6 +1,8 @@
 package de.uniluebeck.itm.vs1112.uebung4.phonebook;
 
 import java.net.URISyntaxException;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDB;
@@ -13,14 +15,19 @@ import de.uniluebeck.itm.vs1112.uebung4.xml.PhoneBookEntryWithUri;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.apache.log4j.Logger;
+
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
  * Skeleton class to implement the phone book REST service specification.
@@ -37,10 +44,26 @@ public class PhoneBookService {
 	private EmployeeDB employeeDB;
 
 	@GET
-	@Produces("text/xml")
-	
-	public Response getPhonebook() throws EmployeeDBIdAlreadyExistsException, EmployeeDBUnknownIdException {
-	    Set<EmployeeDBEntry> entries = employeeDB.getEntries();
+	@Produces("application/xml")
+	public Response getPhonebook(
+	        @DefaultValue("") @QueryParam("name") final String name
+	) throws EmployeeDBIdAlreadyExistsException, EmployeeDBUnknownIdException {
+	    Collection<EmployeeDBEntry> entries = employeeDB.getEntries();
+	    
+	    // filter will only be done if name is not empty
+	    if(!name.isEmpty()) {
+	        // find all entries that match the name
+	        Iterable<EmployeeDBEntry> containingName = Iterables.filter(entries, new Predicate<EmployeeDBEntry>() {
+                @Override
+                public boolean apply(EmployeeDBEntry entry) {
+                    return entry.getName().contains(name);
+                }
+            });
+	        // replace entrylist with filtered items
+	        entries = new HashSet<EmployeeDBEntry>();
+	        Iterables.addAll(entries, containingName);
+	    }
+	    
 	    if(entries.size() == 0) {
 	        return Response.noContent().build();
 	    }
