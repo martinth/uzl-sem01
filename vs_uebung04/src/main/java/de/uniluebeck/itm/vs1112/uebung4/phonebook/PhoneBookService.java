@@ -1,18 +1,9 @@
 package de.uniluebeck.itm.vs1112.uebung4.phonebook;
 
-import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
-
-import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDB;
-import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDBEntry;
-import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDBIdAlreadyExistsException;
-import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDBUnknownIdException;
-import de.uniluebeck.itm.vs1112.uebung4.xml.PhoneBookEntry;
-import de.uniluebeck.itm.vs1112.uebung4.xml.PhoneBookEntryList;
-import de.uniluebeck.itm.vs1112.uebung4.xml.PhoneBookEntryWithUri;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
@@ -27,10 +18,19 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+
 import org.apache.log4j.Logger;
 
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
+
+import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDB;
+import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDBEntry;
+import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDBIdAlreadyExistsException;
+import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDBUnknownIdException;
+import de.uniluebeck.itm.vs1112.uebung4.xml.PhoneBookEntry;
+import de.uniluebeck.itm.vs1112.uebung4.xml.PhoneBookEntryList;
+import de.uniluebeck.itm.vs1112.uebung4.xml.PhoneBookEntryWithUri;
 
 /**
  * Skeleton class to implement the phone book REST service specification.
@@ -201,16 +201,18 @@ public class PhoneBookService {
 	@DELETE
     @Consumes("application/xml")
     public Response deletePhonebook() throws EmployeeDBUnknownIdException {
-
 	    for (EmployeeDBEntry dbEntry : employeeDB.getEntries()) {
             dbEntry.setPhoneNumber("");
             employeeDB.update(dbEntry);
         }
-	    
-	    
 	    return this.getPhonebook("");
 	}
 	
+	/**
+	 * Returns a phone book entry.
+	 * @param id id of the phone book entry
+	 * @return the entry if it exists, otherwise 204 No Content
+	 */
 	@GET
 	@Path("/{id: [0-9]+}")
 	@Produces("application/xml")
@@ -229,6 +231,14 @@ public class PhoneBookService {
 	    }
 	}
 	
+	/**
+	 * Creates or updates the entry with the given ID according to the newEntry parameter.
+	 * @param id id of the resource to update
+	 * @param newEntry data to set for this resource
+	 * @return the new data of the resource
+	 * @throws EmployeeDBUnknownIdException can not happen since we assure it is there
+	 * @throws EmployeeDBIdAlreadyExistsException can not happen because we knoe it is not there
+	 */
 	@PUT
     @Path("/{id: [0-9]+}")
 	@Consumes("application/xml")
@@ -236,8 +246,7 @@ public class PhoneBookService {
     public Response putEntry(
             @PathParam("id") int id,
             PhoneBookEntry newEntry
-    ) throws EmployeeDBUnknownIdException, // can only happen if employeeDB is not thread save
-    EmployeeDBIdAlreadyExistsException, URISyntaxException {   // should not happen in this universe 
+    ) throws EmployeeDBUnknownIdException, EmployeeDBIdAlreadyExistsException { 
         log.debug("PUT phonebook entry with id "+id+" data:\n"+newEntry);
 	    
         EmployeeDBEntry employee = employeeDB.findById(id);
