@@ -16,6 +16,7 @@ import de.uniluebeck.itm.vs1112.uebung4.xml.PhoneBookEntryWithUri;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -189,6 +190,24 @@ public class PhoneBookService {
 	        
 	    }
 
+	    return this.getPhonebook("");
+	}
+	
+	/**
+	 * Deletes all phone book entries.
+	 * @return 204 No Content
+	 * @throws EmployeeDBUnknownIdException can not happen, since we assure it is there
+	 */
+	@DELETE
+    @Consumes("application/xml")
+    public Response deletePhonebook() throws EmployeeDBUnknownIdException {
+
+	    for (EmployeeDBEntry dbEntry : employeeDB.getEntries()) {
+            dbEntry.setPhoneNumber("");
+            employeeDB.update(dbEntry);
+        }
+	    
+	    
 	    return this.getPhonebook("");
 	}
 	
