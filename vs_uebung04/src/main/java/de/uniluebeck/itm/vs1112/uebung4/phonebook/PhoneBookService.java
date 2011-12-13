@@ -5,8 +5,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map.Entry;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDB;
 import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDBEntry;
@@ -20,6 +18,7 @@ import javax.inject.Inject;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -46,6 +45,12 @@ public class PhoneBookService {
 	@Inject
 	private EmployeeDB employeeDB;
 
+	/**
+	 * Returns all phone book entries.
+	 * @param name optional Parameter (null or an empty string) to filter returned phone book entries.
+	 * @return If name is omitted (null or an empty string) returns all phone book entries. 
+	 * If present only returns phone book entries that have a name of which name is a substring.
+	 */
 	@GET
 	@Produces("application/xml")
 	public Response getPhonebook(
@@ -93,23 +98,24 @@ public class PhoneBookService {
         }
 	}
 	
+	/**
+	 * Creates or replaces the complete phone book resource. The payload of the request must contain all entries 
+	 * of the phone book.
+	 * @param newEntryList the phone book to set
+	 * @return all phone book entries
+	 * @throws EmployeeDBUnknownIdExceptioncan can not happen since we modify only existing entries
+	 * @throws EmployeeDBIdAlreadyExistsException can not happen since we assure it is there
+	 */
 	@PUT
     @Consumes("application/xml")
     @Produces("application/xml")
-    public Response putPhonebook(PhoneBookEntryList newEntryList) throws 
-        EmployeeDBUnknownIdException, // should not happen since we modify only existing entries
-        EmployeeDBIdAlreadyExistsException  // should not happen since we assure it is there
-    {
-	    // pattern the uris in the request document must have
-	    Pattern p = Pattern.compile("^/phonebook/([0-9]+)$");
-	    
+    public Response putPhonebook(PhoneBookEntryList newEntryList) throws EmployeeDBUnknownIdException, EmployeeDBIdAlreadyExistsException {
 	    // will store all entries in the request with there ids as key
 	    HashMap<Long, PhoneBookEntryWithUri> entriesInRequest = new HashMap<Long, PhoneBookEntryWithUri>();
 	    
 	    for (PhoneBookEntryWithUri newEntry : newEntryList.getPhoneBookEntryWithUri()) {
-            Matcher result = p.matcher(newEntry.getUri());
-            if(result.matches()) {
-                Long id = Long.parseLong(result.group(1));
+	        Long id = Util.getIDFromUriEntry(newEntry);
+            if(id != null) {
                 entriesInRequest.put(id, newEntry);
             }
             // according to mailinglist bad uris in request should be treated as bad request
@@ -148,6 +154,43 @@ public class PhoneBookService {
 	    return this.getPhonebook("");
 	}
 	
+	/**
+	 * Creates or updates all entries contained in updateEntryList.
+	 * @param updateEntryList phone book entries to update or created
+	 * @return all entries of the phone book
+	 * @throws EmployeeDBIdAlreadyExistsException can not happen since we insert only non existing
+	 * @throws EmployeeDBUnknownIdException can not happen since we assure it is there
+	 */
+	@POST
+    @Consumes("application/xml")
+    @Produces("application/xml")
+    public Response postPhonebook(PhoneBookEntryList updateEntryList) throws EmployeeDBIdAlreadyExistsException, EmployeeDBUnknownIdException {
+	    
+	    for (PhoneBookEntryWithUri updateEntry : updateEntryList.getPhoneBookEntryWithUri()) {
+	        Long id = Util.getIDFromUriEntry(updateEntry);
+            if(id != null) {
+                EmployeeDBEntry entryInDb = employeeDB.findById(id);
+                if(entryInDb == null) {
+                    entryInDb = employeeDB.create(id, updateEntry.getPhoneBookEntry().getName());
+                    entryInDb.setPhoneNumber(updateEntry.getPhoneBookEntry().getNumber());
+                } else {
+                    entryInDb.setName(updateEntry.getPhoneBookEntry().getName());
+                    entryInDb.setPhoneNumber(updateEntry.getPhoneBookEntry().getNumber());
+                }
+                employeeDB.update(entryInDb);
+                //TODO
+            }
+            // according to mailinglist bad uris in request should be treated as bad request
+            else {
+                return Response.status(Status.BAD_REQUEST)
+                        .entity("Uri of item has invalid format: "+updateEntry.getUri())
+                        .build();
+            }
+	        
+	    }
+
+	    return this.getPhonebook("");
+	}
 	
 	@GET
 	@Path("/{id: [0-9]+}")
