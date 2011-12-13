@@ -2,8 +2,11 @@ package de.uniluebeck.itm.vs1112.uebung4.phonebook;
 
 import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDB;
 import de.uniluebeck.itm.vs1112.uebung4.employeedb.EmployeeDBEntry;
@@ -47,7 +50,7 @@ public class PhoneBookService {
 	@Produces("application/xml")
 	public Response getPhonebook(
 	        @DefaultValue("") @QueryParam("name") final String name
-	) throws EmployeeDBIdAlreadyExistsException, EmployeeDBUnknownIdException {
+	) {
 	    Collection<EmployeeDBEntry> entries = employeeDB.getEntries();
 	    
 	    // filter will only be done if name is not empty
@@ -83,6 +86,62 @@ public class PhoneBookService {
 	    
 	    return Response.ok(respData).build();
 	}
+	
+	@PUT
+    @Consumes("application/xml")
+    @Produces("application/xml")
+    public Response putPhonebook(PhoneBookEntryList newEntryList) throws 
+        EmployeeDBUnknownIdException, // should not happen since we modify only existing entries
+        EmployeeDBIdAlreadyExistsException  // should not happen since we assure it is there
+    {
+	    // pattern the uris in the request document must have
+	    Pattern p = Pattern.compile("^/phonebook/([0-9]+)$");
+	    
+	    // will store all entries in the request with there ids as key
+	    HashMap<Long, PhoneBookEntryWithUri> entriesInRequest = new HashMap<Long, PhoneBookEntryWithUri>();
+	    
+	    for (PhoneBookEntryWithUri newEntry : newEntryList.getPhoneBookEntryWithUri()) {
+            Matcher result = p.matcher(newEntry.getUri());
+            if(result.matches()) {
+                Long id = Long.parseLong(result.group(1));
+                entriesInRequest.put(id, newEntry);
+            }
+            // according to mailinglist bad uris in request should be treated as bad request
+            else {
+                return Response.status(Status.BAD_REQUEST)
+                        .entity("Uri of item has invalid format: "+newEntry.getUri())
+                        .build();
+            }
+        }
+	    
+	    /* loop over all entries in db and set there phonenumbers to an empty string to clear
+	     * all phonebook entries */
+	    Collection<EmployeeDBEntry> dbEntries = employeeDB.getEntries();
+	    for (EmployeeDBEntry dbEntry : dbEntries) {
+            dbEntry.setPhoneNumber("");
+            employeeDB.update(dbEntry);
+        }
+	    
+	    /* for alle entries in the request document, set the values in the db to the data
+	     * in the document entry */
+	    for (Entry<Long, PhoneBookEntryWithUri> requestEntry : entriesInRequest.entrySet()) {
+	        EmployeeDBEntry entryInDb = employeeDB.findById(requestEntry.getKey());
+	        PhoneBookEntry phoneBookentry = requestEntry.getValue().getPhoneBookEntry();
+	        
+	        if(entryInDb == null) {
+	            entryInDb = employeeDB.create(requestEntry.getKey(), phoneBookentry.getName());
+	            entryInDb.setPhoneNumber(phoneBookentry.getNumber());
+	        } else {
+	            entryInDb.setName(phoneBookentry.getName());
+	            entryInDb.setPhoneNumber(phoneBookentry.getNumber());
+	        }
+	        employeeDB.update(entryInDb);
+        }
+	    
+	    // reuse getPhonebook to return db content 
+	    return this.getPhonebook("");
+	}
+	
 	
 	@GET
 	@Path("/{id: [0-9]+}")
@@ -130,7 +189,9 @@ public class PhoneBookService {
         }
         employee.setPhoneNumber(newEntry.getNumber());
         employeeDB.update(employee);
-        return Response.status(status).entity(newEntry).build();
+        
+        // we use the normal get view to return the actual data in the db
+        return Response.status(status).entity(this.getEntry(id).getEntity()).build();
     }
 	
 	
