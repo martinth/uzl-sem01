@@ -54,7 +54,7 @@ public class PhoneBookService {
 	    Collection<EmployeeDBEntry> entries = employeeDB.getEntries();
 	    
 	    // filter will only be done if name is not empty
-	    if(!name.isEmpty()) {
+	    if(name != null && !name.isEmpty()) {
 	        // find all entries that match the name
 	        Iterable<EmployeeDBEntry> containingName = Iterables.filter(entries, new Predicate<EmployeeDBEntry>() {
                 @Override
@@ -67,24 +67,30 @@ public class PhoneBookService {
 	        Iterables.addAll(entries, containingName);
 	    }
 	    
-	    if(entries.size() == 0) {
-	        return Response.noContent().build();
-	    }
+	    
 	    
 	    PhoneBookEntryList respData = new PhoneBookEntryList();
 	    
 	    for (EmployeeDBEntry dbEntry : entries) {
-	        PhoneBookEntry pbe = new PhoneBookEntry();
-	        pbe.setName(dbEntry.getName());
-	        pbe.setNumber(dbEntry.getPhoneNumber());
+	        String number = dbEntry.getPhoneNumber();
 	        
-	        PhoneBookEntryWithUri pbu = new PhoneBookEntryWithUri();
-	        pbu.setPhoneBookEntry(pbe);
-	        pbu.setUri("/phonebook/"+dbEntry.getEmployeeId());
-	        respData.getPhoneBookEntryWithUri().add(pbu);
+	        // entries are only in the phone book if they have a number
+	        if(number != null && !number.isEmpty()) {
+    	        PhoneBookEntry pbe = new PhoneBookEntry();
+    	        pbe.setName(dbEntry.getName());
+    	        pbe.setNumber(dbEntry.getPhoneNumber());
+    	        
+    	        PhoneBookEntryWithUri pbu = new PhoneBookEntryWithUri();
+    	        pbu.setPhoneBookEntry(pbe);
+    	        pbu.setUri("/phonebook/"+dbEntry.getEmployeeId());
+    	        respData.getPhoneBookEntryWithUri().add(pbu);
+	        }
         }
-	    
-	    return Response.ok(respData).build();
+	    if(respData.getPhoneBookEntryWithUri().size() == 0) {
+            return Response.noContent().build();
+        } else {
+            return Response.ok(respData).build();
+        }
 	}
 	
 	@PUT
