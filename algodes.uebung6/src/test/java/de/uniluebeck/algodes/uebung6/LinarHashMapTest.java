@@ -42,9 +42,4 @@ public class LinarHashMapTest {
 		map.delete(7);
 	}
 
-	@Test
-	public void testSearch() {
-		fail("Not yet implemented");
-	}
-
 }
