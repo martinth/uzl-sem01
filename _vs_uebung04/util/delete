@@ -1,3 +1,0 @@
-#!/bin/bash
-curl -i -X DELETE localhost:8080/phonebook
-echo

@@ -1,3 +1,0 @@
-#!/bin/bash
-curl -i -H "Accept: application/xml" -X GET localhost:8080/phonebook
-echo
