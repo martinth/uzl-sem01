@@ -6,16 +6,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import com.google.common.base.Joiner;
+
 import de.uzl.algodes.ProblemFile.Problem;
 
-public class Solver {
+public class GraphSolver {
     private Problem problem;
 
-    public Solver(Problem problem) {
+    public GraphSolver(Problem problem) {
         this.problem = problem;
     }
     
-    public void solve() {
+    public String solve() {
         
         Map<Integer, Node> intToNode = new HashMap<Integer, Node>();
         Node root = null;
@@ -30,17 +32,18 @@ public class Solver {
         }
         root = intToNode.get(1);
         
+        ArrayList<Integer> output = new ArrayList<Integer>();
         
         for(Integer request : problem.requests) {
             Node node = intToNode.get(request);
-            System.out.print(node.position + " ");
+            output.add(node.position);
             node.position = 0;
             root = node;
             for(Node neighboor : node.neighboors) {
                 neighboor.position += 1;
             }
         }
-        System.out.print("\n");
+        return Joiner.on(' ').join(output);
     }
     
     class Node {

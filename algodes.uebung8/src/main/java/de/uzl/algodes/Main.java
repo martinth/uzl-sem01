@@ -19,7 +19,7 @@ public class Main {
         }
         ProblemFile pf = new ProblemFile(new File(args[0]));
         for (Problem problem : pf.problems) {
-            new Solver(problem).solve();
+            System.out.println(new GraphSolver(problem).solve());
         }
     
     }
