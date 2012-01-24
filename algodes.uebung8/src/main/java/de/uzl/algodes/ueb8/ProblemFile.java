@@ -1,4 +1,4 @@
-package de.uzl.algodes;
+package de.uzl.algodes.ueb8;
 
 import java.io.BufferedReader;
 import java.io.File;
